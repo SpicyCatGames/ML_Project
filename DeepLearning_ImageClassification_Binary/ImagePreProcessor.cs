@@ -1,10 +1,6 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System;
-using System.IO;
-using System.Text;
-using CsvHelper;
 
 namespace ML_Project
 {
@@ -12,7 +8,7 @@ namespace ML_Project
     {
         public static List<ExtractedData> PreProcessImages(string inputDir, string fileExtension)
         {
-            List<ExtractedData> colorProfiles = new List<ExtractedData>();
+            List<ExtractedData> dataColl = new List<ExtractedData>();
             string[] files = Directory.GetFiles(inputDir, fileExtension);
             foreach (var item in files)
             {
@@ -21,7 +17,7 @@ namespace ML_Project
                 // green 81° to 140°
                 // yellow green 61° to 80°
                 // yellow 51° to 60°
-                ExtractedData colorProfile = new ExtractedData();
+                ExtractedData extractedData = new ExtractedData();
                 foreach (var pixel in pixels)
                 {
                     var hslColor = ColorUtil.FromRGB(pixel);
@@ -32,21 +28,21 @@ namespace ML_Project
                     else if(hslColor.H.IsBetween(51f, 60f))
                     {
                         // yellow
-                        colorProfile.Yellow += 1;
+                        extractedData.Yellow += 1;
                     }
                     else if (hslColor.H.IsBetween(60f, 80f))
                     {
-                        colorProfile.YellowGreen += 1;
+                        extractedData.YellowGreen += 1;
                     }
                     else if(hslColor.H.IsBetween(80f, 140f))
                     {
-                        colorProfile.Green += 1;
+                        extractedData.Green += 1;
                     }
                 }
-                colorProfiles.Add(colorProfile);
-                Console.WriteLine($"{item.Substring(item.LastIndexOf('\\')+1)}, {colorProfile.Yellow},{colorProfile.YellowGreen},{colorProfile.Green}");
+                dataColl.Add(extractedData);
+                Console.WriteLine($"{item.Substring(item.LastIndexOf('\\')+1)}, {extractedData.Yellow},{extractedData.YellowGreen},{extractedData.Green}");
             }
-            return colorProfiles;
+            return dataColl;
         }
 
         private static List<Rgba32> ImagePixels(string preprocessDir, string item)
@@ -81,9 +77,9 @@ namespace ML_Project
         {
             return Math.Abs(a - b) <= epsilon;
         }
-        private static bool IsBetween(this float x, float StartInclusive, float endExclusive)
+        private static bool IsBetween(this float x, float startInclusive, float endExclusive)
         {
-            return x >= StartInclusive && x < endExclusive;
+            return x >= startInclusive && x < endExclusive;
         }
         private static bool DiscardRGBPixel(Rgba32 rgba32)
         {

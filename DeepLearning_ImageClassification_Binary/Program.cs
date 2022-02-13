@@ -32,8 +32,6 @@ namespace ML_Project
                 {
                     Console.WriteLine(dataColl[i]);
                     sbOutput.AppendLine(string.Join(strSeperator, dataColl[i].Yellow, dataColl[i].YellowGreen, dataColl[i].Green, dataColl[i].Ripened));
-
-
                 }
                 // Create and write the csv file
                 File.WriteAllText(strFilePath, sbOutput.ToString());

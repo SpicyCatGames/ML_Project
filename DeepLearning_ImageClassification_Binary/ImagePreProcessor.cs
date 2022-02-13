@@ -38,6 +38,15 @@ namespace ML_Project
                     {
                         extractedData.Green += 1;
                     }
+
+                }
+                if (item.Contains("unripe"))
+                {
+                    extractedData.Ripened = 0;
+                }
+                else
+                {
+                    extractedData.Ripened = 1;
                 }
                 dataColl.Add(extractedData);
                 Console.WriteLine($"{item.Substring(item.LastIndexOf('\\')+1)}, {extractedData.Yellow},{extractedData.YellowGreen},{extractedData.Green}");

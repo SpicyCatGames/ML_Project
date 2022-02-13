@@ -12,67 +12,56 @@ namespace ML_Project
             string[] files = Directory.GetFiles(inputDir, fileExtension);
             foreach (var item in files)
             {
-                // extract all the pixels from this image
-                List<Rgba32> pixels = ImagePixels(inputDir, item);
-                // green 81° to 140°
-                // yellow green 61° to 80°
-                // yellow 51° to 60°
                 ExtractedData extractedData = new ExtractedData();
-                foreach (var pixel in pixels)
+                using (Image<Rgba32> image = Image.Load<Rgba32>(Path.Combine(inputDir, item)))
                 {
-                    var hslColor = ColorUtil.FromRGB(pixel);
-                    if (DiscardRGBPixel(pixel))
-                    {
-                        continue;
-                    }
-                    else if(hslColor.H.IsBetween(51f, 60f))
-                    {
-                        // yellow
-                        extractedData.Yellow += 1;
-                    }
-                    else if (hslColor.H.IsBetween(60f, 80f))
-                    {
-                        extractedData.YellowGreen += 1;
-                    }
-                    else if(hslColor.H.IsBetween(80f, 140f))
-                    {
-                        extractedData.Green += 1;
-                    }
+                    // green 81° to 140°
+                    // yellow green 61° to 80°
+                    // yellow 51° to 60°
 
-                }
-                if (item.Contains("unripe"))
-                {
-                    extractedData.Ripened = 0;
-                }
-                else
-                {
-                    extractedData.Ripened = 1;
+                    // Image<Rgba32> copy = image.Clone<Rgba32>(x => x.Resize(400, 300));
+                    for (int y = 0; y < image.Height; y++)
+                    {
+                        for (int x = 0; x < image.Width; x++)
+                        {
+                            // http://mkweb.bcgsc.ca/color-summarizer/?analyze
+                            Rgba32 rgba32 = default;
+                            image[x, y].ToRgba32(ref rgba32);
+                            // Console.WriteLine(rgba32.ToString());
+                            var hslColor = ColorUtil.FromRGB(rgba32);
+                            if (DiscardRGBPixel(rgba32))
+                            {
+                                continue;
+                            }
+                            else if (hslColor.H.IsBetween(51f, 60f))
+                            {
+                                // yellow
+                                extractedData.Yellow += 1;
+                            }
+                            else if (hslColor.H.IsBetween(60f, 80f))
+                            {
+                                extractedData.YellowGreen += 1;
+                            }
+                            else if (hslColor.H.IsBetween(80f, 140f))
+                            {
+                                extractedData.Green += 1;
+                            }
+
+                            if (item.Contains("unripe"))
+                            {
+                                extractedData.Ripened = 0;
+                            }
+                            else if(item.Contains("ripe"))
+                            {
+                                extractedData.Ripened = 1;
+                            }
+                        }
+                    }
                 }
                 dataColl.Add(extractedData);
                 Console.WriteLine($"{item.Substring(item.LastIndexOf('\\')+1)}, {extractedData.Yellow},{extractedData.YellowGreen},{extractedData.Green}");
             }
             return dataColl;
-        }
-
-        private static List<Rgba32> ImagePixels(string preprocessDir, string item)
-        {
-            List<Rgba32> pixels = new List<Rgba32>();
-            using (Image<Rgba32> image = Image.Load<Rgba32>(Path.Combine(preprocessDir, item)))
-            {
-                // Image<Rgba32> copy = image.Clone<Rgba32>(x => x.Resize(400, 300));
-                for (int y = 0; y < image.Height; y++)
-                {
-                    for (int x = 0; x < image.Width; x++)
-                    {
-                        // http://mkweb.bcgsc.ca/color-summarizer/?analyze
-                        Rgba32 rgba32 = default;
-                        image[x, y].ToRgba32(ref rgba32);
-                        pixels.Add(rgba32);
-                        // Console.WriteLine(rgba32.ToString());
-                    }
-                }
-                return pixels;
-            }
         }
 
         public struct ExtractedData

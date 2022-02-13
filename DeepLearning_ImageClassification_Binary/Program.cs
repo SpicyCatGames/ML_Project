@@ -30,7 +30,7 @@ namespace ML_Project
 
                 for (int i = 0; i < dataColl.Count; i++)
                 {
-                    Console.WriteLine(dataColl[i]);
+                    Console.WriteLine(string.Join(strSeperator, dataColl[i].Yellow, dataColl[i].YellowGreen, dataColl[i].Green, dataColl[i].Ripened));
                     sbOutput.AppendLine(string.Join(strSeperator, dataColl[i].Yellow, dataColl[i].YellowGreen, dataColl[i].Green, dataColl[i].Ripened));
                 }
                 // Create and write the csv file
@@ -41,7 +41,6 @@ namespace ML_Project
             }
             catch (Exception e)
             {
-
                 Console.WriteLine(e.ToString());
             }
 

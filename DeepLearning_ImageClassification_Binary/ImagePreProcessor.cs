@@ -53,7 +53,7 @@ namespace ML_Project
                             }
                             else
                             {
-                                copy[x, y] = new Rgba32(255, 255, 255, 255);
+                                copy[x, y] = new Rgba32(85, 85, 85, 255);
                             }
 
                             if (item.Contains("unripe"))

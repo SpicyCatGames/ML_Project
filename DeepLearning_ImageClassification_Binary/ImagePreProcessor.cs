@@ -6,7 +6,7 @@ namespace ML_Project
 {
     public static class ImagePreProcessor
     {
-        public static List<ExtractedData> PreProcessImages(string inputDir, string fileExtension)
+        public static List<ExtractedData> PreProcessImages(string inputDir, string fileExtension, string outputDir = "")
         {
             List<ExtractedData> dataColl = new List<ExtractedData>();
             string[] files = Directory.GetFiles(inputDir, fileExtension);
@@ -18,8 +18,9 @@ namespace ML_Project
                     // green 81° to 140°
                     // yellow green 61° to 80°
                     // yellow 51° to 60°
-
-                    // Image<Rgba32> copy = image.Clone<Rgba32>(x => x.Resize(400, 300));
+                    bool saveOutputAsFile = false;
+                    if(outputDir != "") saveOutputAsFile = true;
+                    Image<Rgba32> copy = image.Clone<Rgba32>();
                     for (int y = 0; y < image.Height; y++)
                     {
                         for (int x = 0; x < image.Width; x++)
@@ -31,20 +32,28 @@ namespace ML_Project
                             var hslColor = ColorUtil.FromRGB(rgba32);
                             if (DiscardRGBPixel(rgba32))
                             {
+                                if (saveOutputAsFile) copy[x, y] = new Rgba32(0, 0, 0, 255);
                                 continue;
                             }
                             else if (hslColor.H.IsBetween(51f, 60f))
                             {
                                 // yellow
+                                if (saveOutputAsFile) copy[x, y] = new Rgba32(255, 255, 0, 255);
                                 extractedData.Yellow += 1;
                             }
                             else if (hslColor.H.IsBetween(60f, 80f))
                             {
+                                if (saveOutputAsFile) copy[x, y] = new Rgba32(154, 205, 50, 255);
                                 extractedData.YellowGreen += 1;
                             }
                             else if (hslColor.H.IsBetween(80f, 140f))
                             {
+                                if (saveOutputAsFile) copy[x, y] = new Rgba32(0, 255, 0, 255);
                                 extractedData.Green += 1;
+                            }
+                            else
+                            {
+                                copy[x, y] = new Rgba32(255, 255, 255, 255);
                             }
 
                             if (item.Contains("unripe"))
@@ -57,6 +66,8 @@ namespace ML_Project
                             }
                         }
                     }
+                    if (saveOutputAsFile)
+                        copy.Save(Path.Combine(outputDir, item.Substring(item.LastIndexOf('\\') + 1)));
                 }
                 dataColl.Add(extractedData);
                 Console.WriteLine($"{item.Substring(item.LastIndexOf('\\')+1)}, {extractedData.Yellow},{extractedData.YellowGreen},{extractedData.Green}");

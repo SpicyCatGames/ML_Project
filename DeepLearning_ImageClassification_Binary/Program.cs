@@ -20,7 +20,7 @@ namespace ML_Project
             string preprocessDir = Path.Combine(WorkingDirectory, @"Preprocess");
             string preprocessInputDir = Path.Combine(preprocessDir, @"Input");
             string preprocessOutputDir = Path.Combine(preprocessDir, @"Output");
-            List<ExtractedData> dataColl = ImagePreProcessor.PreProcessImages(preprocessInputDir, "*.jpg");
+            List<ExtractedData> dataColl = ImagePreProcessor.PreProcessImages(preprocessInputDir, "*.jpg", preprocessOutputDir);
 
             try
             {

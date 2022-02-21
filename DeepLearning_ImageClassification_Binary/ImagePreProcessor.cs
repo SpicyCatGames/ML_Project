@@ -71,7 +71,11 @@ namespace ML_Project
                 }
                 extractedData.TurnIntoPercents();
                 dataColl.Add(extractedData);
-                Console.WriteLine($"{item.Substring(item.LastIndexOf('\\')+1)}, {extractedData.Yellow},{extractedData.YellowGreen},{extractedData.Green}");
+                Console.WriteLine($"{item.Substring(item.LastIndexOf('\\')+1)}, " +
+                    $"Y:{extractedData.Yellow}, " +
+                    $"YG:{extractedData.YellowGreen}, " +
+                    $"G:{extractedData.Green} " +
+                    ((extractedData.Ripened == 1) ? "Ripe" : "Unripe"));
             }
             return dataColl;
         }

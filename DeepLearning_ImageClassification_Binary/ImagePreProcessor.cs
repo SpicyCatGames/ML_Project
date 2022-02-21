@@ -77,9 +77,9 @@ namespace ML_Project
 
         public struct ExtractedData
         {
-            public int Yellow;
-            public int Green;
-            public int YellowGreen;
+            public float Yellow;
+            public float Green;
+            public float YellowGreen;
             public int Ripened;
         }
         private static bool ApproximatelyEqual(this float a, float b, float epsilon = float.Epsilon)

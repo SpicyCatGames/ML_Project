@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using CsvHelper;
 using System.IO;
 using System.Text;
-using SixLabors.ImageSharp;
+using SixLabors.ImageSharp; // Requires nuget package imagesharp
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using static ML_Project.ImagePreProcessor;

@@ -30,8 +30,9 @@ namespace ML_Project
 
                 for (int i = 0; i < dataColl.Count; i++)
                 {
-                    Console.WriteLine(string.Join(strSeperator, dataColl[i].Yellow, dataColl[i].YellowGreen, dataColl[i].Green, dataColl[i].Ripened));
-                    sbOutput.AppendLine(string.Join(strSeperator, dataColl[i].Yellow, dataColl[i].YellowGreen, dataColl[i].Green, dataColl[i].Ripened));
+                    var stringToWrite = string.Join(strSeperator, dataColl[i].Yellow, dataColl[i].YellowGreen, dataColl[i].Green, dataColl[i].Ripened);
+                    //Console.WriteLine(stringToWrite);
+                    sbOutput.AppendLine(stringToWrite);
                 }
                 // Create and write the csv file
                 File.WriteAllText(strFilePath, sbOutput.ToString());

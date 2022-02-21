@@ -69,6 +69,7 @@ namespace ML_Project
                     if (saveOutputAsFile)
                         copy.Save(Path.Combine(outputDir, item.Substring(item.LastIndexOf('\\') + 1)));
                 }
+                extractedData.TurnIntoPercents();
                 dataColl.Add(extractedData);
                 Console.WriteLine($"{item.Substring(item.LastIndexOf('\\')+1)}, {extractedData.Yellow},{extractedData.YellowGreen},{extractedData.Green}");
             }

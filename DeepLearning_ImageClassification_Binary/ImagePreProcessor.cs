@@ -81,6 +81,15 @@ namespace ML_Project
             public float Green;
             public float YellowGreen;
             public int Ripened;
+
+            public void TurnIntoPercents()
+            {
+                float totalPixels = Yellow + YellowGreen + Green;
+
+                this.Yellow = (this.Yellow /totalPixels) * 100f;
+                this.YellowGreen = (this.YellowGreen / totalPixels) * 100f;
+                this.Green = (this.Green / totalPixels) * 100f;
+            }
         }
         private static bool ApproximatelyEqual(this float a, float b, float epsilon = float.Epsilon)
         {

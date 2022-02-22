@@ -9,6 +9,7 @@ using SixLabors.ImageSharp.Processing;
 using static ML_Project.ImagePreProcessor;
 using Microsoft.ML;
 using static Microsoft.ML.DataOperationsCatalog;
+using Microsoft.ML.Data;
 
 namespace ML_Project
 {
@@ -52,7 +53,13 @@ namespace ML_Project
             //Console.WriteLine(hSLAColor.H);
 
             MLContext mlContext = new MLContext();
+
             TrainTestData splitDataView = LoadData(mlContext, dataColl);
+
+            ITransformer model = BuildAndTrainModel(mlContext, splitDataView.TrainSet);
+
+            Evaluate(mlContext, model, splitDataView.TestSet);
+            UseModelWithSingleItem(mlContext, model);
         }
 
         private static TrainTestData LoadData(MLContext mlContext, IEnumerable<ExtractedData> dataColl)
@@ -60,6 +67,67 @@ namespace ML_Project
             IDataView dataView = mlContext.Data.LoadFromEnumerable<ExtractedData>(dataColl);
             TrainTestData splitDataView = mlContext.Data.TrainTestSplit(dataView, testFraction: 0.2);
             return splitDataView;
+        }
+
+        private static ITransformer BuildAndTrainModel(MLContext mlContext, IDataView splitTrainSet)
+        {
+            var estimator = mlContext.Transforms
+                .Concatenate("Features", "Yellow", "Green", "YellowGreen")
+                .Append(mlContext.BinaryClassification.Trainers.LinearSvm());
+
+            Console.WriteLine("=============== Create and Train the Model ===============");
+            var model = estimator.Fit(splitTrainSet);
+            Console.WriteLine("=============== End of training ===============");
+            Console.WriteLine();
+
+            return model;
+        }
+
+        private static void Evaluate(MLContext mlContext, ITransformer model, IDataView splitTestSet)
+        {
+            Console.WriteLine("=============== Evaluating Model accuracy with Test data===============");
+            IDataView predictions = model.Transform(splitTestSet);
+
+            BinaryClassificationMetrics metrics = mlContext.BinaryClassification.EvaluateNonCalibrated(predictions, "Label");
+
+            Console.WriteLine($"Accuracy: {metrics.Accuracy:0.##}{Environment.NewLine}" +
+                              $"F1 Score: {metrics.F1Score:#.##}{Environment.NewLine}" +
+                              $"Positive Precision: {metrics.PositivePrecision:#.##}{Environment.NewLine}" +
+                              $"Negative Precision: {metrics.NegativePrecision:0.##}{Environment.NewLine}" +
+                              $"Positive Recall: {metrics.PositiveRecall:#.##}{Environment.NewLine}" +
+                              $"Negative Recall: {metrics.NegativeRecall:#.##}{Environment.NewLine}" +
+                              $"Area Under Precision Recall Curve: {metrics.AreaUnderPrecisionRecallCurve:#.##}{Environment.NewLine}");
+        }
+
+        private static void UseModelWithSingleItem(MLContext mlContext, ITransformer model)
+        {
+            PredictionEngine<ExtractedData, RipenessPrediction> predictionFunction = mlContext.Model.CreatePredictionEngine<ExtractedData, RipenessPrediction>(model);
+            ExtractedData sampleData = new ExtractedData
+            {
+                Yellow = 70.57143f,
+                YellowGreen = 27.714285f,
+                Green = 1.7142856f, 
+                Ripened = true
+            };
+            var resultPrediction = predictionFunction.Predict(sampleData);
+
+            Console.WriteLine();
+            Console.WriteLine("=============== Prediction Test of model with a single sample and test dataset ===============");
+
+            Console.WriteLine();
+            Console.WriteLine($"Y:{resultPrediction.Yellow}, " +
+                $"YG:{resultPrediction.YellowGreen}, " +
+                $"G:{resultPrediction.Green} " +
+                (resultPrediction.Ripened ? "Ripe" : "Unripe"));
+            Console.WriteLine($"Prediction: {(Convert.ToBoolean(resultPrediction.Prediction) ? "Ripe" : "Unripe")}");
+
+            Console.WriteLine("=============== End of Predictions ===============");
+            Console.WriteLine();
+        }
+
+        private static void UseModelWithBatchItems(MLContext mlContext, ITransformer model)
+        {
+
         }
     }
 }

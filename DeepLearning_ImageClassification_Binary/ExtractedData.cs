@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.ML.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,14 @@ namespace ML_Project
 {
     public class ExtractedData
     {
+        [LoadColumn(0)]
         public float Yellow;
+        [LoadColumn(1)]
         public float Green;
+        [LoadColumn(2)]
         public float YellowGreen;
         public int Ripened;
+        [LoadColumn(3), ColumnName("Label")]
 
         public void TurnIntoPercents()
         {

@@ -58,11 +58,11 @@ namespace ML_Project
 
                             if (item.Contains("unripe"))
                             {
-                                extractedData.Ripened = 0;
+                                extractedData.Ripened = false;
                             }
                             else if(item.Contains("ripe"))
                             {
-                                extractedData.Ripened = 1;
+                                extractedData.Ripened = true;
                             }
                         }
                     }
@@ -75,7 +75,7 @@ namespace ML_Project
                     $"Y:{extractedData.Yellow}, " +
                     $"YG:{extractedData.YellowGreen}, " +
                     $"G:{extractedData.Green} " +
-                    ((extractedData.Ripened == 1) ? "Ripe" : "Unripe"));
+                    (extractedData.Ripened ? "Ripe" : "Unripe"));
             }
             return dataColl;
         }

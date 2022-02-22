@@ -15,8 +15,8 @@ namespace ML_Project
         public float Green;
         [LoadColumn(2)]
         public float YellowGreen;
-        public int Ripened;
         [LoadColumn(3), ColumnName("Label")]
+        public bool Ripened;
 
         public void TurnIntoPercents()
         {

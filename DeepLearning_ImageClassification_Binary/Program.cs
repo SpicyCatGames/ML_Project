@@ -45,6 +45,8 @@ namespace ML_Project
                 Console.WriteLine(e.ToString());
             }
 
+            string _dataPath = Path.Combine(preprocessOutputDir, @"output.txt");
+
             //Rgba32 rgba32 = new Rgba32(128, 157, 48);
             //HSLAColor hSLAColor = ColorUtil.FromRGB(rgba32);
             //Console.WriteLine(hSLAColor.H);

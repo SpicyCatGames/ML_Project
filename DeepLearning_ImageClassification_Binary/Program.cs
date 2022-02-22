@@ -7,6 +7,8 @@ using SixLabors.ImageSharp; // Requires nuget package imagesharp
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using static ML_Project.ImagePreProcessor;
+using Microsoft.ML;
+using static Microsoft.ML.DataOperationsCatalog;
 
 namespace ML_Project
 {
@@ -45,13 +47,19 @@ namespace ML_Project
                 Console.WriteLine(e.ToString());
             }
 
-            string _dataPath = Path.Combine(preprocessOutputDir, @"output.txt");
-
             //Rgba32 rgba32 = new Rgba32(128, 157, 48);
             //HSLAColor hSLAColor = ColorUtil.FromRGB(rgba32);
             //Console.WriteLine(hSLAColor.H);
+
+            MLContext mlContext = new MLContext();
+            TrainTestData splitDataView = LoadData(mlContext, dataColl);
         }
 
-
+        private static TrainTestData LoadData(MLContext mlContext, IEnumerable<ExtractedData> dataColl)
+        {
+            IDataView dataView = mlContext.Data.LoadFromEnumerable<ExtractedData>(dataColl);
+            TrainTestData splitDataView = mlContext.Data.TrainTestSplit(dataView, testFraction: 0.2);
+            return splitDataView;
+        }
     }
 }

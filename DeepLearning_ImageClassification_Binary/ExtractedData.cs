@@ -27,4 +27,15 @@ namespace ML_Project
             this.Green = (this.Green / totalPixels) * 100f;
         }
     }
+
+    public class RipenessPrediction : ExtractedData
+    {
+
+        [ColumnName("PredictedLabel")]
+        public bool Prediction { get; set; }
+
+        public float Probability { get; set; }
+
+        public float Score { get; set; }
+    }
 }

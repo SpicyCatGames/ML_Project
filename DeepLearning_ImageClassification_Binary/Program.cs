@@ -73,7 +73,7 @@ namespace ML_Project
         {
             var estimator = mlContext.Transforms
                 .Concatenate("Features", "Yellow", "Green", "YellowGreen")
-                .Append(mlContext.BinaryClassification.Trainers.LinearSvm());
+                .Append(mlContext.BinaryClassification.Trainers.LdSvm());
 
             Console.WriteLine("=============== Create and Train the Model ===============");
             var model = estimator.Fit(splitTrainSet);

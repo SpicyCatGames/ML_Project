@@ -31,7 +31,6 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
-DeepLearning_ImageClassification_Binary/Preprocess/Input/*
 DeepLearning_ImageClassification_Binary/Preprocess/Output/*
 
 # Visual Studio 2015/2017 cache/options directory

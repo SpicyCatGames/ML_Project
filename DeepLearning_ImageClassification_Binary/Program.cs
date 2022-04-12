@@ -56,10 +56,50 @@ namespace ML_Project
 
             TrainTestData splitDataView = LoadData(mlContext, dataColl);
 
-            ITransformer model = BuildAndTrainModel(mlContext, splitDataView.TrainSet);
+            Console.WriteLine("=============== LdSVM ===============");
+            var LdSVMestimator = mlContext.Transforms
+                .Concatenate("Features", "Yellow", "Green", "YellowGreen")
+                .Append(mlContext.BinaryClassification.Trainers.LdSvm());
+            var LdSVMmodel = LdSVMestimator.Fit(splitDataView.TrainSet);
+            // ITransformer model = BuildAndTrainModel(mlContext, splitDataView.TrainSet);
+            Evaluate(mlContext, LdSVMmodel, splitDataView.TestSet);
+            // UseModelWithSingleItem(mlContext, model);
 
-            Evaluate(mlContext, model, splitDataView.TestSet);
-            UseModelWithSingleItem(mlContext, model);
+            Console.WriteLine("=============== LinearSVM ===============");
+            var LDSVMmlContext = new MLContext();
+            splitDataView = LoadData(LDSVMmlContext, dataColl);
+            var LinearSVMestimator = LDSVMmlContext.Transforms
+                .Concatenate("Features", "Yellow", "Green", "YellowGreen")
+                .Append(LDSVMmlContext.BinaryClassification.Trainers.LinearSvm());
+            var LinearSVMmodel = LinearSVMestimator.Fit(splitDataView.TrainSet);
+            Evaluate(LDSVMmlContext, LinearSVMmodel, splitDataView.TestSet);
+
+            Console.WriteLine("=============== AveragedPerceptron ===============");
+            var APContext = new MLContext();
+            splitDataView = LoadData(APContext, dataColl);
+            var APMestimator = APContext.Transforms
+                .Concatenate("Features", "Yellow", "Green", "YellowGreen")
+                .Append(APContext.BinaryClassification.Trainers.AveragedPerceptron());
+            var APMmodel = APMestimator.Fit(splitDataView.TrainSet);
+            Evaluate(APContext, APMmodel, splitDataView.TestSet);
+
+            Console.WriteLine("=============== LbfgsLogisticRegression ===============");
+            var LRContext = new MLContext();
+            splitDataView = LoadData(LRContext, dataColl);
+            var LRestimator = LRContext.Transforms
+                .Concatenate("Features", "Yellow", "Green", "YellowGreen")
+                .Append(LRContext.BinaryClassification.Trainers.LbfgsLogisticRegression());
+            var LRmodel = LRestimator.Fit(splitDataView.TrainSet);
+            Evaluate(LRContext, LRmodel, splitDataView.TestSet);
+
+            Console.WriteLine("=============== SdcaLogisticRegression ===============");
+            var sdcaLRmlContext = new MLContext();
+            splitDataView = LoadData(sdcaLRmlContext, dataColl);
+            var sdcaLRestimator = sdcaLRmlContext.Transforms
+                .Concatenate("Features", "Yellow", "Green", "YellowGreen")
+                .Append(sdcaLRmlContext.BinaryClassification.Trainers.SdcaLogisticRegression());
+            var sdcaLRmodel = sdcaLRestimator.Fit(splitDataView.TrainSet);
+            Evaluate(sdcaLRmlContext, sdcaLRmodel, splitDataView.TestSet);
         }
 
         private static TrainTestData LoadData(MLContext mlContext, IEnumerable<ExtractedData> dataColl)
